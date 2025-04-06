@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:gravity="center"
+    android:padding="16dp">
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Minesweeper"
+        android:textSize="36sp"
+        android:textStyle="bold"
+        android:layout_marginBottom="32dp"/>
+
+    <Button
+        android:id="@+id/btnContinueGame"
+        android:layout_width="200dp"
+        android:layout_height="wrap_content"
+        android:text="继续游戏"
+        android:layout_marginBottom="16dp"/>
+
+    <Button
+        android:id="@+id/btnStartGame"
+        android:layout_width="200dp"
+        android:layout_height="wrap_content"
+        android:text="开始新游戏"
+        android:layout_marginBottom="16dp"/>
+
+    <Button
+        android:id="@+id/btnHelp"
+        android:layout_width="200dp"
+        android:layout_height="wrap_content"
+        android:text="操作说明"
+        android:layout_marginBottom="16dp"/>
+
+    <Button
+        android:id="@+id/btnSettings"
+        android:layout_width="200dp"
+        android:layout_height="wrap_content"
+        android:text="设置"/>
+
+    <TextView
+        android:id="@+id/tvBestTime"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="最佳记录：\n暂无"
+        android:textSize="16sp"
+        android:textColor="#666666"
+        android:gravity="left"/>
+
+</LinearLayout>
