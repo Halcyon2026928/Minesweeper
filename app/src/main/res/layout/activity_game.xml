@@ -1,83 +1,121 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@drawable/bg_gradient"
     android:orientation="vertical"
-    android:paddingTop="24dp"
-    android:paddingBottom="24dp"
-    android:paddingLeft="4dp"
-    android:paddingRight="4dp">
+    android:paddingStart="16dp"
+    android:paddingTop="10dp"
+    android:paddingEnd="16dp"
+    android:paddingBottom="16dp">
 
+    <!-- ========== 顶部状态胶囊 ========== -->
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="horizontal"
         android:gravity="center_vertical"
-        android:layout_marginBottom="4dp">
+        android:orientation="horizontal">
 
         <TextView
             android:id="@+id/tvTimer"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:background="@drawable/bg_chip"
+            android:paddingStart="16dp"
+            android:paddingTop="9dp"
+            android:paddingEnd="16dp"
+            android:paddingBottom="9dp"
             android:text="时间: 0"
-            android:textSize="16sp"/>
+            android:textColor="@color/text_primary"
+            android:textSize="14sp"
+            android:textStyle="bold" />
 
         <Space
             android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"/>
+            android:layout_height="1dp"
+            android:layout_weight="1" />
 
         <TextView
             android:id="@+id/tvMineCount"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:background="@drawable/bg_chip"
+            android:paddingStart="16dp"
+            android:paddingTop="9dp"
+            android:paddingEnd="16dp"
+            android:paddingBottom="9dp"
             android:text="剩余地雷: 0"
-            android:textSize="16sp"/>
+            android:textColor="@color/text_primary"
+            android:textSize="14sp"
+            android:textStyle="bold" />
     </LinearLayout>
 
+    <!-- ========== 棋盘区域 ========== -->
     <FrameLayout
+        android:id="@+id/boardArea"
         android:layout_width="match_parent"
         android:layout_height="0dp"
+        android:layout_marginTop="12dp"
         android:layout_weight="1">
 
-        <GridLayout
-            android:id="@+id/gridLayout"
+        <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_gravity="center"/>
+            android:layout_gravity="center"
+            android:gravity="center_horizontal"
+            android:orientation="vertical">
+
+            <FrameLayout
+                android:id="@+id/boardContainer"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="@drawable/bg_board"
+                android:padding="10dp">
+
+                <LinearLayout
+                    android:id="@+id/boardGrid"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical" />
+            </FrameLayout>
+
+            <TextView
+                android:id="@+id/tvGridSize"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="12dp"
+                android:letterSpacing="0.15"
+                android:text="9×9"
+                android:textColor="@color/text_tertiary"
+                android:textSize="12sp" />
+        </LinearLayout>
     </FrameLayout>
 
-    <TextView
-        android:id="@+id/tvGridSize"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center"
-        android:text="9×9"
-        android:textSize="24sp"
-        android:textStyle="bold"
-        android:layout_marginTop="8dp"
-        android:layout_marginBottom="8dp"/>
-
+    <!-- ========== 底部操作 ========== -->
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:gravity="center"
-        android:layout_marginTop="4dp">
+        android:orientation="horizontal">
 
         <Button
             android:id="@+id/btnRestart"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="重新开始"
-            android:layout_marginEnd="8dp"/>
+            style="@style/Widget.Minesweeper.Button.Primary.Small"
+            android:layout_width="0dp"
+            android:layout_height="50dp"
+            android:layout_weight="1"
+            android:text="重新开始" />
+
+        <Space
+            android:layout_width="12dp"
+            android:layout_height="1dp" />
 
         <Button
             android:id="@+id/btnHome"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="返回主页"/>
-
+            style="@style/Widget.Minesweeper.Button.Secondary.Small"
+            android:layout_width="0dp"
+            android:layout_height="50dp"
+            android:layout_weight="1"
+            android:text="返回主页" />
     </LinearLayout>
-
-</LinearLayout> 
+</LinearLayout>

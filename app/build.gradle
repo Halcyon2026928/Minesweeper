@@ -5,13 +5,14 @@ plugins {
 android {
     namespace 'com.example.Minesweeper'
     compileSdk 34
+    buildToolsVersion '36.0.0'
 
     defaultConfig {
         applicationId "com.example.Minesweeper"
         minSdk 24
         targetSdk 34
-        versionCode 2
-        versionName "2.1"
+        versionCode 3
+        versionName "2.2"
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
@@ -33,7 +34,7 @@ dependencies {
     implementation 'androidx.appcompat:appcompat:1.6.1'
     implementation 'com.google.android.material:material:1.11.0'
     implementation 'androidx.constraintlayout:constraintlayout:2.1.4'
-    implementation 'androidx.gridlayout:gridlayout:1.0.0'
+    // 棋盘使用固定尺寸的行列 LinearLayout 自绘格子，无需 gridlayout 依赖
     testImplementation 'junit:junit:4.13.2'
     androidTestImplementation 'androidx.test.ext:junit:1.1.5'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.5.1'

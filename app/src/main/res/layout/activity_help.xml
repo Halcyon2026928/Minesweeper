@@ -1,100 +1,149 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
-    android:padding="16dp">
+    android:background="@drawable/bg_gradient"
+    android:fillViewport="true"
+    android:overScrollMode="never"
+    android:scrollbars="none">
 
-    <TextView
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="扫雷游戏操作说明"
-        android:textSize="24sp"
-        android:textStyle="bold"
-        android:gravity="center"
-        android:layout_marginBottom="20dp"/>
+        android:orientation="vertical"
+        android:paddingStart="24dp"
+        android:paddingTop="26dp"
+        android:paddingEnd="24dp"
+        android:paddingBottom="24dp">
 
-    <ScrollView
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_weight="1">
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="操作说明"
+            android:textColor="@color/text_primary"
+            android:textSize="28sp"
+            android:textStyle="bold"
+            android:includeFontPadding="false" />
 
+        <TextView
+            style="@style/Text.Minesweeper.Label"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:text="How To Play" />
+
+        <View
+            android:layout_width="40dp"
+            android:layout_height="3dp"
+            android:layout_marginTop="12dp"
+            android:background="@drawable/bg_accent_bar" />
+
+        <!-- 基本规则 -->
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="vertical">
+            android:layout_marginTop="22dp"
+            android:background="@drawable/bg_card"
+            android:orientation="vertical"
+            android:padding="18dp">
 
             <TextView
-                android:layout_width="match_parent"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="基本规则："
-                android:textSize="18sp"
-                android:textStyle="bold"
-                android:layout_marginBottom="10dp"/>
+                android:text="基本规则"
+                android:textColor="@color/text_primary"
+                android:textSize="16sp"
+                android:textStyle="bold" />
 
             <TextView
+                style="@style/Text.Minesweeper.Body"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="· 游戏开始时，所有格子都是隐藏的\n· 点击格子可以揭示其内容\n· 数字表示周围8个格子中地雷的数量\n· 长按格子可以标记地雷\n· 避免点击地雷，揭示所有非地雷格子即可获胜"
-                android:textSize="15sp"
-                android:gravity="left"
-                android:layout_marginBottom="20dp"/>
-
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="操作方式："
-                android:textSize="18sp"
-                android:textStyle="bold"
-                android:layout_marginBottom="10dp"/>
-
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="· 单击：揭示格子\n· 长按：标记/取消标记地雷\n· 双击：快速揭示周围未标记的格子"
-                android:textSize="15sp"
-                android:gravity="left"
-                android:layout_marginBottom="20dp"/>
-
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="难度说明："
-                android:textSize="18sp"
-                android:textStyle="bold"
-                android:layout_marginBottom="10dp"/>
-
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="· 初级：9×9格子，10个地雷\n· 中级：16×16格子，40个地雷\n· 高级：18×28格子，99个地雷"
-                android:textSize="15sp"
-                android:gravity="left"
-                android:layout_marginBottom="20dp"/>
-
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="提示："
-                android:textSize="18sp"
-                android:textStyle="bold"
-                android:layout_marginBottom="10dp"/>
-
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="· 游戏开始时的第一次点击不一定是安全的哦！\n· 使用标记功能可以帮助你记住可能的地雷位置\n· 双击功能可以快速揭示周围安全的格子\n· 注意观察数字提示，合理推理地雷位置"
-                android:textSize="15sp"
-                android:gravity="left"/>
-
+                android:layout_marginTop="10dp"
+                android:text="· 开局所有格子隐藏，点击即可揭示\n· 数字表示周围 8 格里的地雷数量\n· 长按格子插旗标记疑似地雷\n· 避开地雷，揭示全部安全格即通关" />
         </LinearLayout>
-    </ScrollView>
 
-    <Button
-        android:id="@+id/btnBack"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="返回"
-        android:layout_marginTop="20dp"/>
+        <!-- 操作方式 -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="14dp"
+            android:background="@drawable/bg_card"
+            android:orientation="vertical"
+            android:padding="18dp">
 
-</LinearLayout> 
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="操作方式"
+                android:textColor="@color/text_primary"
+                android:textSize="16sp"
+                android:textStyle="bold" />
+
+            <TextView
+                style="@style/Text.Minesweeper.Body"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:text="· 单击：揭示格子\n· 长按：标记 / 取消标记\n· 双击：快速翻开周围未标记的格子" />
+        </LinearLayout>
+
+        <!-- 难度 -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="14dp"
+            android:background="@drawable/bg_card"
+            android:orientation="vertical"
+            android:padding="18dp">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="难度"
+                android:textColor="@color/text_primary"
+                android:textSize="16sp"
+                android:textStyle="bold" />
+
+            <TextView
+                style="@style/Text.Minesweeper.Body"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:text="· 初级：9×9 格，10 颗雷\n· 中级：16×16 格，40 颗雷\n· 高级：18×28 格，99 颗雷" />
+        </LinearLayout>
+
+        <!-- 提示 -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="14dp"
+            android:background="@drawable/bg_card"
+            android:orientation="vertical"
+            android:padding="18dp">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="小技巧"
+                android:textColor="@color/text_primary"
+                android:textSize="16sp"
+                android:textStyle="bold" />
+
+            <TextView
+                style="@style/Text.Minesweeper.Body"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:text="· 第一次点击不保证安全，别急着赌\n· 先标记再推导，双击能省不少时间\n· 数字 1 常常是突破口" />
+        </LinearLayout>
+
+        <Button
+            android:id="@+id/btnBack"
+            style="@style/Widget.Minesweeper.Button.Primary"
+            android:layout_width="match_parent"
+            android:layout_height="52dp"
+            android:layout_marginTop="22dp"
+            android:text="返回" />
+    </LinearLayout>
+</ScrollView>

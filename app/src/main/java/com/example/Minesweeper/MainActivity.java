@@ -3,27 +3,22 @@ package com.example.Minesweeper;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.TextView;
-import androidx.appcompat.app.AlertDialog;
+import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.app.AppCompatDelegate;
 import java.io.File;
 
 public class MainActivity extends AppCompatActivity {
-    private TextView tvBestTime;
     private Button btnContinueGame;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        
-        // 设置全屏
-        getWindow().setFlags(
-            WindowManager.LayoutParams.FLAG_FULLSCREEN,
-            WindowManager.LayoutParams.FLAG_FULLSCREEN
-        );
+
+        // 沉浸式状态栏：透明状态栏 + 内容延伸至系统栏下方（内边距由工具类自动补齐）
+        ImmersiveUtils.enableImmersiveStatusBar(this);
         
         // 隐藏标题栏
         if (getSupportActionBar() != null) {
@@ -56,7 +51,6 @@ public class MainActivity extends AppCompatActivity {
         }
 
         // 初始化最佳记录显示
-        tvBestTime = findViewById(R.id.tvBestTime);
         updateBestTime();
 
         // 设置按钮点击事件
@@ -104,27 +98,30 @@ public class MainActivity extends AppCompatActivity {
 
     private void updateBestTime() {
         SharedPreferences recordsPrefs = getSharedPreferences("MinesweeperRecords", MODE_PRIVATE);
-        int beginnerBest = recordsPrefs.getInt("bestTime_beginner", Integer.MAX_VALUE);
-        int intermediateBest = recordsPrefs.getInt("bestTime_intermediate", Integer.MAX_VALUE);
-        int expertBest = recordsPrefs.getInt("bestTime_expert", Integer.MAX_VALUE);
-        
-        int beginnerGames = recordsPrefs.getInt("gamesPlayed_beginner", 0);
-        int intermediateGames = recordsPrefs.getInt("gamesPlayed_intermediate", 0);
-        int expertGames = recordsPrefs.getInt("gamesPlayed_expert", 0);
-        
-        StringBuilder bestTimeText = new StringBuilder("最佳记录：\n");
-        bestTimeText.append("初级：").append(beginnerBest == Integer.MAX_VALUE ? "暂无" : beginnerBest + "秒")
-                   .append("（已玩").append(beginnerGames).append("局）\n");
-        bestTimeText.append("中级：").append(intermediateBest == Integer.MAX_VALUE ? "暂无" : intermediateBest + "秒")
-                   .append("（已玩").append(intermediateGames).append("局）\n");
-        bestTimeText.append("高级：").append(expertBest == Integer.MAX_VALUE ? "暂无" : expertBest + "秒")
-                   .append("（已玩").append(expertGames).append("局）");
-        tvBestTime.setText(bestTimeText.toString());
+        bindRecord(R.id.tvBeginnerBest, R.id.tvBeginnerGames, "beginner", recordsPrefs);
+        bindRecord(R.id.tvIntermediateBest, R.id.tvIntermediateGames, "intermediate", recordsPrefs);
+        bindRecord(R.id.tvExpertBest, R.id.tvExpertGames, "expert", recordsPrefs);
+    }
+
+    /** 把某个难度的最佳成绩与局数写入战绩卡对应行 */
+    private void bindRecord(int bestViewId, int gamesViewId, String difficulty,
+                            SharedPreferences recordsPrefs) {
+        int best = recordsPrefs.getInt("bestTime_" + difficulty, Integer.MAX_VALUE);
+        int games = recordsPrefs.getInt("gamesPlayed_" + difficulty, 0);
+
+        TextView bestView = findViewById(bestViewId);
+        TextView gamesView = findViewById(gamesViewId);
+        if (bestView != null) {
+            bestView.setText(best == Integer.MAX_VALUE ? "—" : best + " 秒");
+        }
+        if (gamesView != null) {
+            gamesView.setText(games + " 局");
+        }
     }
 
     private void showDifficultyDialog() {
         String[] difficulties = {"初级", "中级", "高级"};
-        new AlertDialog.Builder(this)
+        new MaterialAlertDialogBuilder(this)
                 .setTitle("选择难度")
                 .setItems(difficulties, (dialog, which) -> {
                     String difficulty;

@@ -1,53 +1,258 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
-    android:gravity="center"
-    android:padding="16dp">
+    android:background="@drawable/bg_gradient"
+    android:fillViewport="true"
+    android:overScrollMode="never"
+    android:scrollbars="none">
 
-    <TextView
-        android:layout_width="wrap_content"
+    <LinearLayout
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Minesweeper"
-        android:textSize="36sp"
-        android:textStyle="bold"
-        android:layout_marginBottom="32dp"/>
+        android:orientation="vertical"
+        android:paddingStart="24dp"
+        android:paddingTop="30dp"
+        android:paddingEnd="24dp"
+        android:paddingBottom="32dp">
 
-    <Button
-        android:id="@+id/btnContinueGame"
-        android:layout_width="200dp"
-        android:layout_height="wrap_content"
-        android:text="继续游戏"
-        android:layout_marginBottom="16dp"/>
+        <!-- ========== 标题区 ========== -->
+        <TextView
+            style="@style/Text.Minesweeper.Title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="扫雷" />
 
-    <Button
-        android:id="@+id/btnStartGame"
-        android:layout_width="200dp"
-        android:layout_height="wrap_content"
-        android:text="开始新游戏"
-        android:layout_marginBottom="16dp"/>
+        <TextView
+            style="@style/Text.Minesweeper.Label"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:text="MINESWEEPER" />
 
-    <Button
-        android:id="@+id/btnHelp"
-        android:layout_width="200dp"
-        android:layout_height="wrap_content"
-        android:text="操作说明"
-        android:layout_marginBottom="16dp"/>
+        <View
+            android:layout_width="48dp"
+            android:layout_height="3dp"
+            android:layout_marginTop="14dp"
+            android:background="@drawable/bg_accent_bar" />
 
-    <Button
-        android:id="@+id/btnSettings"
-        android:layout_width="200dp"
-        android:layout_height="wrap_content"
-        android:text="设置"/>
+        <!-- ========== 战绩卡 ========== -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="28dp"
+            android:background="@drawable/bg_card"
+            android:orientation="vertical"
+            android:paddingStart="18dp"
+            android:paddingTop="16dp"
+            android:paddingEnd="18dp"
+            android:paddingBottom="18dp">
 
-    <TextView
-        android:id="@+id/tvBestTime"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="最佳记录：\n暂无"
-        android:textSize="16sp"
-        android:textColor="#666666"
-        android:gravity="left"/>
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center_vertical"
+                android:orientation="horizontal">
 
-</LinearLayout>
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="战绩"
+                    android:textColor="@color/text_primary"
+                    android:textSize="16sp"
+                    android:textStyle="bold" />
+
+                <Space
+                    android:layout_width="0dp"
+                    android:layout_height="1dp"
+                    android:layout_weight="1" />
+
+                <TextView
+                    style="@style/Text.Minesweeper.Label"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Best Record" />
+            </LinearLayout>
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:layout_marginTop="12dp"
+                android:background="@color/divider" />
+
+            <!-- 初级 -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="44dp"
+                android:gravity="center_vertical"
+                android:orientation="horizontal">
+
+                <View
+                    android:layout_width="8dp"
+                    android:layout_height="8dp"
+                    android:background="@drawable/dot_accent" />
+
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="10dp"
+                    android:layout_weight="1"
+                    android:text="初级"
+                    android:textColor="@color/text_secondary"
+                    android:textSize="14sp" />
+
+                <TextView
+                    android:id="@+id/tvBeginnerBest"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="—"
+                    android:textColor="@color/text_primary"
+                    android:textSize="16sp"
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:id="@+id/tvBeginnerGames"
+                    android:layout_width="64dp"
+                    android:layout_height="wrap_content"
+                    android:gravity="end"
+                    android:text="0 局"
+                    android:textColor="@color/text_tertiary"
+                    android:textSize="12sp" />
+            </LinearLayout>
+
+            <!-- 中级 -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="44dp"
+                android:gravity="center_vertical"
+                android:orientation="horizontal">
+
+                <View
+                    android:layout_width="8dp"
+                    android:layout_height="8dp"
+                    android:background="@drawable/dot_sky" />
+
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="10dp"
+                    android:layout_weight="1"
+                    android:text="中级"
+                    android:textColor="@color/text_secondary"
+                    android:textSize="14sp" />
+
+                <TextView
+                    android:id="@+id/tvIntermediateBest"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="—"
+                    android:textColor="@color/text_primary"
+                    android:textSize="16sp"
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:id="@+id/tvIntermediateGames"
+                    android:layout_width="64dp"
+                    android:layout_height="wrap_content"
+                    android:gravity="end"
+                    android:text="0 局"
+                    android:textColor="@color/text_tertiary"
+                    android:textSize="12sp" />
+            </LinearLayout>
+
+            <!-- 高级 -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="44dp"
+                android:gravity="center_vertical"
+                android:orientation="horizontal">
+
+                <View
+                    android:layout_width="8dp"
+                    android:layout_height="8dp"
+                    android:background="@drawable/dot_amber" />
+
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="10dp"
+                    android:layout_weight="1"
+                    android:text="高级"
+                    android:textColor="@color/text_secondary"
+                    android:textSize="14sp" />
+
+                <TextView
+                    android:id="@+id/tvExpertBest"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="—"
+                    android:textColor="@color/text_primary"
+                    android:textSize="16sp"
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:id="@+id/tvExpertGames"
+                    android:layout_width="64dp"
+                    android:layout_height="wrap_content"
+                    android:gravity="end"
+                    android:text="0 局"
+                    android:textColor="@color/text_tertiary"
+                    android:textSize="12sp" />
+            </LinearLayout>
+        </LinearLayout>
+
+        <!-- ========== 主按钮 ========== -->
+        <Button
+            android:id="@+id/btnStartGame"
+            style="@style/Widget.Minesweeper.Button.Primary"
+            android:layout_width="match_parent"
+            android:layout_height="56dp"
+            android:layout_marginTop="26dp"
+            android:text="开始新游戏" />
+
+        <Button
+            android:id="@+id/btnContinueGame"
+            style="@style/Widget.Minesweeper.Button.Secondary"
+            android:layout_width="match_parent"
+            android:layout_height="52dp"
+            android:layout_marginTop="12dp"
+            android:text="继续游戏" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="12dp"
+            android:orientation="horizontal">
+
+            <Button
+                android:id="@+id/btnHelp"
+                style="@style/Widget.Minesweeper.Button.Secondary.Small"
+                android:layout_width="0dp"
+                android:layout_height="48dp"
+                android:layout_weight="1"
+                android:text="操作说明" />
+
+            <Space
+                android:layout_width="12dp"
+                android:layout_height="1dp" />
+
+            <Button
+                android:id="@+id/btnSettings"
+                style="@style/Widget.Minesweeper.Button.Secondary.Small"
+                android:layout_width="0dp"
+                android:layout_height="48dp"
+                android:layout_weight="1"
+                android:text="设置" />
+        </LinearLayout>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="22dp"
+            android:letterSpacing="0.06"
+            android:text="单击揭雷 · 长按插旗 · 双击速开"
+            android:textColor="@color/text_tertiary"
+            android:textSize="12sp" />
+    </LinearLayout>
+</ScrollView>

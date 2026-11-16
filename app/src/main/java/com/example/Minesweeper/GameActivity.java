@@ -10,12 +10,13 @@ import android.os.VibrationEffect;
 import android.os.Vibrator;
 import android.content.Context;
 import android.widget.Button;
-import android.widget.GridLayout;
+import android.widget.LinearLayout;
+import android.util.TypedValue;
 import android.widget.TextView;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
+import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import java.util.Random;
-import android.view.WindowManager;
 import android.view.Gravity;
 import android.view.View;
 import android.os.Build;
@@ -59,11 +60,8 @@ public class GameActivity extends AppCompatActivity {
         // 设置屏幕方向为竖屏
         setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
         
-        // 设置全屏
-        getWindow().setFlags(
-            WindowManager.LayoutParams.FLAG_FULLSCREEN,
-            WindowManager.LayoutParams.FLAG_FULLSCREEN
-        );
+        // 沉浸式状态栏：透明状态栏 + 内容延伸至系统栏下方（内边距由工具类自动补齐）
+        ImmersiveUtils.enableImmersiveStatusBar(this);
         
         // 隐藏标题栏
         if (getSupportActionBar() != null) {
@@ -135,12 +133,14 @@ public class GameActivity extends AppCompatActivity {
         tvGridSize.setText(cols + "×" + rows);
         tvMineCount.setText("剩余地雷: " + remainingMines);
 
-        // 初始化游戏
+        // 初始化游戏：等棋盘区域完成测量后再按真实可用空间排布格子
         initializeGame();
-        setupButtons();
-        
-        // 尝试加载保存的游戏进度
-        loadGameProgress();
+        View boardArea = findViewById(R.id.boardArea);
+        boardArea.post(() -> {
+            setupButtons();
+            // 尝试加载保存的游戏进度
+            loadGameProgress();
+        });
 
         // 设置重新开始按钮
         Button btnRestart = findViewById(R.id.btnRestart);
@@ -196,53 +196,62 @@ public class GameActivity extends AppCompatActivity {
     }
 
     private void setupButtons() {
-        GridLayout gridLayout = findViewById(R.id.gridLayout);
-        gridLayout.setColumnCount(cols);
-        gridLayout.setRowCount(rows);
+        LinearLayout boardGrid = findViewById(R.id.boardGrid);
+        View boardArea = findViewById(R.id.boardArea);
+        View boardContainer = findViewById(R.id.boardContainer);
 
-        // 计算每个按钮的大小
-        int screenWidth = getResources().getDisplayMetrics().widthPixels;
-        int screenHeight = getResources().getDisplayMetrics().heightPixels;
-        
-        // 计算可用高度（减去顶部状态栏、标题栏和底部按钮的空间）
-        int availableHeight = (int)(screenHeight * 0.7); // 使用屏幕高度的70%作为游戏区域
-        
-        // 根据宽高比例计算按钮大小
-        int buttonSizeFromWidth = (int) (screenWidth * 0.95f / cols);
-        int buttonSizeFromHeight = availableHeight / rows;
-        
-        // 选择较小的尺寸以确保完全适应屏幕
-        int buttonSize = Math.min(buttonSizeFromWidth, buttonSizeFromHeight);
+        // 重建棋盘前先清空旧格子，避免重新开始时叠加出一模一样的棋盘
+        boardGrid.removeAllViews();
 
-        // 设置网格布局参数
-        gridLayout.setUseDefaultMargins(false);
-        gridLayout.setAlignmentMode(GridLayout.ALIGN_BOUNDS);
+        // 按棋盘区域（而不是整块屏幕）的真实可用空间计算格子大小，
+        // 这样沉浸状态栏与卡片内边距都不会把棋盘挤出屏幕
+        int gap = dpToPx(1);
+        int availableWidth = boardArea.getWidth()
+                - boardContainer.getPaddingLeft() - boardContainer.getPaddingRight();
+        int availableHeight = boardArea.getHeight()
+                - boardContainer.getPaddingTop() - boardContainer.getPaddingBottom();
+        if (availableWidth <= 0 || availableHeight <= 0) {
+            // 布局尚未完成测量时的保守估算
+            int screenWidth = getResources().getDisplayMetrics().widthPixels;
+            int screenHeight = getResources().getDisplayMetrics().heightPixels;
+            availableWidth = screenWidth - dpToPx(64);
+            availableHeight = (int) (screenHeight * 0.5f);
+        }
+
+        int sizeFromWidth = (availableWidth - gap * 2 * cols) / cols;
+        int sizeFromHeight = (availableHeight - gap * 2 * rows) / rows;
+        int buttonSize = Math.min(sizeFromWidth, sizeFromHeight);
+        if (buttonSize < 1) {
+            buttonSize = 1;
+        }
+
+        // 字号按像素一次性定死，点击后不再改动，避免文字尺寸影响格子的测量结果
+        float textSizePx = buttonSize * 0.42f;
 
         for (int i = 0; i < rows; i++) {
+            // 每行一个横向 LinearLayout，格子尺寸完全固定，不会被文字撑开
+            LinearLayout rowView = new LinearLayout(this);
+            rowView.setOrientation(LinearLayout.HORIZONTAL);
+            rowView.setGravity(Gravity.CENTER);
+
             for (int j = 0; j < cols; j++) {
                 Button button = new Button(this);
-                GridLayout.LayoutParams params = new GridLayout.LayoutParams();
-                params.width = buttonSize;
-                params.height = buttonSize;
-                params.setMargins(1, 1, 1, 1);
-                
-                // 设置网格位置
-                params.rowSpec = GridLayout.spec(i, 1f);
-                params.columnSpec = GridLayout.spec(j, 1f);
-                
+
+                LinearLayout.LayoutParams params =
+                        new LinearLayout.LayoutParams(buttonSize, buttonSize);
+                params.setMargins(gap, gap, gap, gap);
                 button.setLayoutParams(params);
+
                 button.setPadding(0, 0, 0, 0);
-                
-                // 设置按钮样式
                 button.setBackgroundResource(R.drawable.cell_unrevealed);
-                button.setTextSize(buttonSize / 4); // 根据按钮大小动态设置文字大小
+                button.setTextSize(TypedValue.COMPLEX_UNIT_PX, textSizePx);
                 button.setMinWidth(0);
                 button.setMinHeight(0);
                 button.setMinimumWidth(0);
                 button.setMinimumHeight(0);
-                button.setGravity(Gravity.CENTER); // 设置文本居中
-                button.setIncludeFontPadding(false); // 移除文本的内边距
-                
+                button.setGravity(Gravity.CENTER);
+                button.setIncludeFontPadding(false);
+
                 final int row = i;
                 final int col = j;
 
@@ -283,9 +292,17 @@ public class GameActivity extends AppCompatActivity {
                 });
 
                 buttons[i][j] = button;
-                gridLayout.addView(button);
+                rowView.addView(button);
             }
+
+            boardGrid.addView(rowView, new LinearLayout.LayoutParams(
+                    LinearLayout.LayoutParams.WRAP_CONTENT,
+                    LinearLayout.LayoutParams.WRAP_CONTENT));
         }
+    }
+
+    private int dpToPx(float dp) {
+        return Math.round(dp * getResources().getDisplayMetrics().density);
     }
 
     private void playSound(MediaPlayer sound) {
@@ -313,17 +330,7 @@ public class GameActivity extends AppCompatActivity {
         if (minesArray[row][col]) {
             button.setText("💣");
             button.setBackgroundResource(R.drawable.cell_revealed);
-            // 根据难度设置炸弹大小
-            String difficulty = getIntent().getStringExtra("difficulty");
-            if ("expert".equals(difficulty)) {
-                button.setTextSize(12); // 高级模式使用更小的大小
-            } else if ("intermediate".equals(difficulty)) {
-                button.setTextSize(16); // 中级模式使用中等大小
-            } else {
-                button.setTextSize(20); // 初级保持原来的大小
-            }
             button.setTextColor(getResources().getColor(R.color.game_over_text));
-            button.setPadding(2, 0, 2, 0);
             button.setGravity(Gravity.CENTER);
             button.setIncludeFontPadding(false);
             playSound(explosionSound);
@@ -335,15 +342,7 @@ public class GameActivity extends AppCompatActivity {
         int adjacentMines = countAdjacentMines(row, col);
         if (adjacentMines > 0) {
             button.setText(String.valueOf(adjacentMines));
-            // 根据难度设置数字大小
-            String difficulty = getIntent().getStringExtra("difficulty");
-            if ("expert".equals(difficulty)) {
-                button.setTextSize(14); // 高级模式使用更小的大小
-            } else {
-                button.setTextSize(20); // 初级和中级保持原来的大小
-            }
             button.setTextColor(getResources().getColor(getNumberColor(adjacentMines)));
-            button.setPadding(2, 0, 2, 0);
             button.setGravity(Gravity.CENTER);
             button.setIncludeFontPadding(false);
         } else {
@@ -369,17 +368,13 @@ public class GameActivity extends AppCompatActivity {
             Button button = buttons[row][col];
             if (flagged[row][col]) {
                 button.setText("🚩");
-                button.setTextSize(20);
                 button.setTextColor(getResources().getColor(R.color.flagged_text));
-                button.setPadding(2, 0, 2, 0);
                 button.setGravity(Gravity.CENTER);
                 button.setIncludeFontPadding(false);
                 remainingMines--;
             } else {
                 button.setText("");
                 button.setBackgroundResource(R.drawable.cell_unrevealed);
-                button.setTextSize(20);
-                button.setPadding(2, 0, 2, 0);
                 button.setGravity(Gravity.CENTER);
                 button.setIncludeFontPadding(false);
                 remainingMines++;
@@ -449,9 +444,7 @@ public class GameActivity extends AppCompatActivity {
                         int adjacentMines = countAdjacentMines(i, j);
                         if (adjacentMines > 0) {
                             button.setText(String.valueOf(adjacentMines));
-                            button.setTextSize(20);
                             button.setTextColor(getResources().getColor(getNumberColor(adjacentMines)));
-                            button.setPadding(2, 0, 2, 0);
                             button.setGravity(Gravity.CENTER);
                         } else {
                             button.setText("");
@@ -491,7 +484,7 @@ public class GameActivity extends AppCompatActivity {
                 gamesPlayed + 1);
 
         // 显示对话框
-        AlertDialog dialog = new AlertDialog.Builder(this)
+        AlertDialog dialog = new MaterialAlertDialogBuilder(this)
                 .setTitle("游戏胜利")
                 .setMessage(message)
                 .setPositiveButton("重新开始", (dialog1, which) -> {
@@ -553,16 +546,7 @@ public class GameActivity extends AppCompatActivity {
                     Button button = buttons[i][j];
                     button.setText("💣");
                     button.setBackgroundResource(R.drawable.cell_revealed);
-                    // 根据难度统一设置炸弹大小
-                    if ("expert".equals(difficulty)) {
-                        button.setTextSize(12); // 高级模式使用更小的大小
-                    } else if ("intermediate".equals(difficulty)) {
-                        button.setTextSize(16); // 中级模式使用中等大小
-                    } else {
-                        button.setTextSize(20); // 初级保持原来的大小
-                    }
                     button.setTextColor(getResources().getColor(R.color.game_over_text));
-                    button.setPadding(2, 0, 2, 0);
                     button.setGravity(Gravity.CENTER);
                     button.setIncludeFontPadding(false);
                 }
@@ -570,7 +554,7 @@ public class GameActivity extends AppCompatActivity {
         }
         
         // 显示游戏结束对话框
-        AlertDialog dialog = new AlertDialog.Builder(this)
+        AlertDialog dialog = new MaterialAlertDialogBuilder(this)
             .setTitle("游戏结束")
             .setMessage(String.format("很遗憾，你踩到地雷了！\n\n当前难度已玩局数：%d", gamesPlayed + 1))
             .setPositiveButton("重新开始", (dialog1, which) -> {
@@ -800,6 +784,10 @@ public class GameActivity extends AppCompatActivity {
     }
 
     private void updateAllButtons() {
+        if (buttons == null) {
+            // 棋盘尚未创建（首次布局前的 onResume 回调），跳过刷新
+            return;
+        }
         for (int i = 0; i < rows; i++) {
             for (int j = 0; j < cols; j++) {
                 Button button = buttons[i][j];
@@ -807,25 +795,11 @@ public class GameActivity extends AppCompatActivity {
                     if (minesArray[i][j]) {
                         button.setText("💣");
                         button.setBackgroundResource(R.drawable.cell_revealed);
-                        String difficulty = getIntent().getStringExtra("difficulty");
-                        if ("expert".equals(difficulty)) {
-                            button.setTextSize(12);
-                        } else if ("intermediate".equals(difficulty)) {
-                            button.setTextSize(16);
-                        } else {
-                            button.setTextSize(20);
-                        }
                         button.setTextColor(getResources().getColor(R.color.game_over_text));
                     } else {
                         int count = countAdjacentMines(i, j);
                         if (count > 0) {
                             button.setText(String.valueOf(count));
-                            String difficulty = getIntent().getStringExtra("difficulty");
-                            if ("expert".equals(difficulty)) {
-                                button.setTextSize(14);
-                            } else {
-                                button.setTextSize(20);
-                            }
                             button.setTextColor(getResources().getColor(getNumberColor(count)));
                         } else {
                             button.setText("");
@@ -835,13 +809,11 @@ public class GameActivity extends AppCompatActivity {
                 } else if (flagged[i][j]) {
                     button.setText("🚩");
                     button.setBackgroundResource(R.drawable.cell_unrevealed);
-                    button.setTextSize(20);
                     button.setTextColor(getResources().getColor(R.color.flagged_text));
                 } else {
                     button.setText("");
                     button.setBackgroundResource(R.drawable.cell_unrevealed);
                 }
-                button.setPadding(2, 0, 2, 0);
                 button.setGravity(Gravity.CENTER);
                 button.setIncludeFontPadding(false);
             }

@@ -33,7 +33,7 @@
         <activity
             android:name=".SettingsActivity"
             android:exported="false"
-            android:theme="@style/Theme.AppCompat.Light.Dialog"/>
+            android:theme="@style/Theme.Minesweeper.Dialog"/>
 
         <activity
             android:name=".GameActivity"

@@ -9,16 +9,12 @@ public class HelpActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        // 沉浸式状态栏
+        ImmersiveUtils.enableImmersiveStatusBar(this);
         setContentView(R.layout.activity_help);
         if (getSupportActionBar() != null) {
             getSupportActionBar().hide();
         }
-
-        // 设置全屏
-        getWindow().setFlags(
-            android.view.WindowManager.LayoutParams.FLAG_FULLSCREEN,
-            android.view.WindowManager.LayoutParams.FLAG_FULLSCREEN
-        );
 
         // 设置返回按钮点击事件
         Button btnBack = findViewById(R.id.btnBack);

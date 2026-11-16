@@ -2,21 +2,21 @@ package com.example.Minesweeper;
 
 import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.widget.Switch;
+import android.widget.CompoundButton;
 import android.widget.TextView;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.view.Gravity;
 import android.view.ViewGroup.LayoutParams;
-import androidx.appcompat.app.AlertDialog;
+import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.app.AppCompatDelegate;
 
 public class SettingsActivity extends AppCompatActivity {
     private SharedPreferences preferences;
-    private Switch switchSound;
-    private Switch switchDarkMode;
+    private CompoundButton switchSound;
+    private CompoundButton switchDarkMode;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -26,12 +26,7 @@ public class SettingsActivity extends AppCompatActivity {
             getSupportActionBar().hide();
         }
 
-        // 设置全屏
-        getWindow().setFlags(
-                android.view.WindowManager.LayoutParams.FLAG_FULLSCREEN,
-                android.view.WindowManager.LayoutParams.FLAG_FULLSCREEN
-        );
-        // 设置窗口背景半透明
+        // 设置窗口变暗程度（浮动卡片式设置面板）
         getWindow().setDimAmount(0.5f);
         
         preferences = getSharedPreferences("MinesweeperPrefs", MODE_PRIVATE);
@@ -68,7 +63,7 @@ public class SettingsActivity extends AppCompatActivity {
 
         // 关于按钮点击事件
         tvAbout.setOnClickListener(v -> {
-            AlertDialog.Builder builder = new AlertDialog.Builder(this);
+            MaterialAlertDialogBuilder builder = new MaterialAlertDialogBuilder(this);
             builder.setTitle("关于")
                    .setMessage("扫雷 v2.1\n\n作者：酷安@只对RMB着迷\n\n有bug或者别的问题可以到酷安留言或者联系我\n\n联系我：2470004849@qq.com")
                    .setPositiveButton("确定", null)
@@ -77,7 +72,7 @@ public class SettingsActivity extends AppCompatActivity {
 
         // 清除记录按钮点击事件
         tvClearRecords.setOnClickListener(v -> {
-            AlertDialog.Builder builder = new AlertDialog.Builder(this);
+            MaterialAlertDialogBuilder builder = new MaterialAlertDialogBuilder(this);
             builder.setTitle("清除最佳记录")
                    .setMessage("确定要清除所有难度的最佳记录吗？")
                    .setPositiveButton("确定", (dialog, which) -> {
@@ -90,7 +85,7 @@ public class SettingsActivity extends AppCompatActivity {
 
         // 清除局数统计按钮点击事件
         tvClearGames.setOnClickListener(v -> {
-            AlertDialog.Builder builder = new AlertDialog.Builder(this);
+            MaterialAlertDialogBuilder builder = new MaterialAlertDialogBuilder(this);
             builder.setTitle("清除局数统计")
                    .setMessage("确定要清除所有难度的局数统计吗？")
                    .setPositiveButton("确定", (dialog, which) -> {
@@ -109,7 +104,7 @@ public class SettingsActivity extends AppCompatActivity {
         // 捐赠按钮点击事件
         tvDonate.setOnClickListener(v -> {
             String[] paymentMethods = {"微信支付", "支付宝"};
-            new AlertDialog.Builder(this)
+            new MaterialAlertDialogBuilder(this)
                 .setTitle("选择支付方式")
                 .setItems(paymentMethods, (dialog, which) -> {
                     // 创建垂直布局
@@ -146,7 +141,7 @@ public class SettingsActivity extends AppCompatActivity {
                     layout.addView(textView);
 
                     // 显示对话框
-                    new AlertDialog.Builder(this)
+                    new MaterialAlertDialogBuilder(this)
                         .setView(layout)
                         .setPositiveButton("关闭", null)
                         .show();
